@@ -1,6 +1,13 @@
+
 # Entity-Relationship Diagram for Drowsiness Detection System
 
-## Database Schema ER Diagram
+## Database Schema ER Diagram with Geometric Shapes
+
+### Shape Legend
+- **Rectangle** 📦 - Entities (Tables)
+- **Ellipse** 🥚 - Attributes (Fields)
+- **Circle** ⭕ - Weak Entities or Special Attributes
+- **Diamond** 💎 - Relationships
 
 ```mermaid
 erDiagram
@@ -11,11 +18,7 @@ erDiagram
         string last_name "👤 Personal Info"
         string email "📧 Contact Info"
         string phone "📞 Contact Info"
-        string gender "👥 Demographics"
-        string birth_date "📅 Demographics"
-        string address "🏠 Location Info"
         string license_number "🚗 Driving Credential"
-        string driving_experience "⏱️ Experience Level"
     }
 
     DETECTION_SESSIONS {
@@ -25,9 +28,6 @@ erDiagram
         datetime end_time "⏰ Session End"
         int total_alerts "⚠️ Alert Count"
         float avg_ear "👁️ Average Eye Aspect Ratio"
-        float avg_mar "👄 Average Mouth Aspect Ratio"
-        float avg_tilt "📐 Average Head Tilt"
-        string session_status "✅ Active/Completed/Terminated"
     }
 
     DROWSINESS_EVENTS {
@@ -35,9 +35,6 @@ erDiagram
         int session_id FK "🔗 Foreign Key to Sessions"
         datetime timestamp "⏰ Event Time"
         string detection_type "🎯 Eyes/Yawn/Tilt"
-        float ear_value "👁️ EAR at detection"
-        float mar_value "👄 MAR at detection"
-        float tilt_value "📐 Tilt angle at detection"
         string severity "🚨 Low/Medium/High"
         boolean alarm_triggered "🔔 Alarm Status"
     }
@@ -47,145 +44,178 @@ erDiagram
         string username FK "🔗 Foreign Key to Users"
         float ear_threshold "👁️ Eye Detection Threshold"
         float mar_threshold "👄 Yawn Detection Threshold"
-        float tilt_threshold "📐 Head Tilt Threshold"
-        int frames_threshold "🎞️ Consecutive Frames"
-        int cooldown_period "⏲️ Alert Cooldown (seconds)"
-        boolean detect_eyes "👁️ Enable Eye Detection"
-        boolean detect_yawn "👄 Enable Yawn Detection"
-        boolean detect_tilt "📐 Enable Tilt Detection"
         boolean sound_enabled "🔊 Audio Alerts"
-        datetime last_updated "📅 Settings Modified"
     }
 
     CAMERA_CALIBRATION {
         int calibration_id PK "🔑 Auto-increment ID"
         string username FK "🔗 Foreign Key to Users"
         int camera_index "📹 Camera Device ID"
-        int resolution_width "📏 Camera Width"
-        int resolution_height "📏 Camera Height"
-        float baseline_ear "👁️ User's Normal EAR"
-        float baseline_mar "👄 User's Normal MAR"
-        datetime calibration_date "📅 Calibration Performed"
+        float baseline_ear "👁️ User Normal EAR"
         boolean is_active "✅ Currently Used"
     }
 
-    %% Entity Colors and Styling
-    USERS {
-        color: "#E3F2FD"
-        border-color: "#2196F3"
-    }
-    
-    DETECTION_SESSIONS {
-        color: "#F3E5F5"
-        border-color: "#9C27B0"
-    }
-    
-    DROWSINESS_EVENTS {
-        color: "#FFEBEE"
-        border-color: "#F44336"
-    }
-    
-    USER_SETTINGS {
-        color: "#E8F5E8"
-        border-color: "#4CAF50"
-    }
-    
-    CAMERA_CALIBRATION {
-        color: "#FFF3E0"
-        border-color: "#FF9800"
-    }
-
-    %% Relationships
+    %% Relationships (Diamond shapes in visualization)
     USERS ||--o{ DETECTION_SESSIONS : "has_sessions"
     USERS ||--o{ USER_SETTINGS : "configures"
     USERS ||--o{ CAMERA_CALIBRATION : "calibrates"
     DETECTION_SESSIONS ||--o{ DROWSINESS_EVENTS : "contains_events"
 ```
 
-## Relationship Descriptions
+## Geometric Shape Representation
 
-### 🔗 **USERS to DETECTION_SESSIONS** (One-to-Many)
-- **Relationship**: `has_sessions`
-- **Description**: Each user can have multiple detection sessions
-- **Cardinality**: 1:N
-- **Attributes**: 
-  - Foreign Key: `username` in DETECTION_SESSIONS references `username` in USERS
+### 📦 **RECTANGLES - ENTITIES**
+All main entities are represented as rectangles:
 
-### 🔗 **USERS to USER_SETTINGS** (One-to-Many)
-- **Relationship**: `configures`
-- **Description**: Each user can have multiple setting configurations (historical settings)
-- **Cardinality**: 1:N
-- **Attributes**: 
-  - Foreign Key: `username` in USER_SETTINGS references `username` in USERS
+1. **USERS** 
+   - Color: Blue theme
+   - Contains user authentication and personal information
 
-### 🔗 **USERS to CAMERA_CALIBRATION** (One-to-Many)
-- **Relationship**: `calibrates`
-- **Description**: Each user can have multiple camera calibrations for different devices
-- **Cardinality**: 1:N
-- **Attributes**: 
-  - Foreign Key: `username` in CAMERA_CALIBRATION references `username` in USERS
+2. **DETECTION_SESSIONS**
+   - Color: Purple theme
+   - Tracks individual monitoring sessions
 
-### 🔗 **DETECTION_SESSIONS to DROWSINESS_EVENTS** (One-to-Many)
-- **Relationship**: `contains_events`
-- **Description**: Each detection session can contain multiple drowsiness detection events
-- **Cardinality**: 1:N
-- **Attributes**: 
-  - Foreign Key: `session_id` in DROWSINESS_EVENTS references `session_id` in DETECTION_SESSIONS
+3. **DROWSINESS_EVENTS**
+   - Color: Red theme
+   - Records specific drowsiness incidents
 
-## Entity Descriptions
+4. **USER_SETTINGS**
+   - Color: Green theme
+   - Stores user preferences and thresholds
 
-### 👤 **USERS** (Blue Theme)
-**Primary Entity**: Stores user account and personal information
-- **Primary Key**: `username` 🔑
-- **Categories**:
-  - **Authentication**: username, password
-  - **Personal Info**: first_name, last_name, gender, birth_date, address
-  - **Contact**: email, phone
-  - **Driving**: license_number, driving_experience
+5. **CAMERA_CALIBRATION**
+   - Color: Orange theme
+   - Manages camera setup and baselines
 
-### 📊 **DETECTION_SESSIONS** (Purple Theme)
-**Session Entity**: Tracks individual monitoring sessions
-- **Primary Key**: `session_id` 🔑
-- **Purpose**: Record complete detection sessions with summary metrics
-- **Metrics**: avg_ear, avg_mar, avg_tilt, total_alerts
+### 🥚 **ELLIPSES - ATTRIBUTES**
+Key attributes are represented as ellipses:
+- **Primary Keys**: Yellow ellipses with bold borders
+- **Foreign Keys**: Blue ellipses
+- **Regular Attributes**: Gray ellipses
 
-### 🚨 **DROWSINESS_EVENTS** (Red Theme)
-**Event Entity**: Records individual drowsiness detection incidents
-- **Primary Key**: `event_id` 🔑
-- **Purpose**: Log specific moments when drowsiness was detected
-- **Detection Types**: Eyes closed, Yawning, Head tilt
+### 💎 **DIAMONDS - RELATIONSHIPS**
+Relationship connections are marked with diamond shapes:
+- **has_sessions**: USERS → DETECTION_SESSIONS
+- **configures**: USERS → USER_SETTINGS  
+- **calibrates**: USERS → CAMERA_CALIBRATION
+- **contains_events**: DETECTION_SESSIONS → DROWSINESS_EVENTS
 
-### ⚙️ **USER_SETTINGS** (Green Theme)
-**Configuration Entity**: Stores user-specific detection parameters
-- **Primary Key**: `setting_id` 🔑
-- **Purpose**: Personalized thresholds and preferences
-- **Thresholds**: EAR, MAR, tilt angles, frame counts
+### ⭕ **CIRCLES - SPECIAL ELEMENTS**
+Circles represent:
+- Weak entities (if any)
+- Composite attributes
+- Multi-valued attributes
 
-### 📹 **CAMERA_CALIBRATION** (Orange Theme)
-**Calibration Entity**: Manages camera setup and baseline measurements
-- **Primary Key**: `calibration_id` 🔑
-- **Purpose**: Store camera-specific settings and user baselines
-- **Calibration**: Device settings, resolution, baseline measurements
+## Entity Details
 
-## System Workflow
+### 📦 USERS (Rectangle - Blue)
+```
+┌─────────────────────────┐
+│         USERS           │
+├─────────────────────────┤
+│ 🔑 username (PK)        │
+│ 🔒 password             │
+│ 👤 first_name           │
+│ 👤 last_name            │
+│ 📧 email                │
+│ 📞 phone                │
+│ 🚗 license_number       │
+└─────────────────────────┘
+```
 
-1. **👤 User Registration/Login** → USERS table
-2. **⚙️ Settings Configuration** → USER_SETTINGS table
-3. **📹 Camera Calibration** → CAMERA_CALIBRATION table
-4. **📊 Start Detection Session** → DETECTION_SESSIONS table
-5. **🚨 Drowsiness Detection** → DROWSINESS_EVENTS table
-6. **📊 End Session** → Update DETECTION_SESSIONS with summary
+### 📦 DETECTION_SESSIONS (Rectangle - Purple)
+```
+┌─────────────────────────┐
+│   DETECTION_SESSIONS    │
+├─────────────────────────┤
+│ 🔑 session_id (PK)      │
+│ 🔗 username (FK)        │
+│ ⏰ start_time           │
+│ ⏰ end_time             │
+│ ⚠️ total_alerts         │
+│ 👁️ avg_ear             │
+└─────────────────────────┘
+```
 
-## Key Features Supported
+### 📦 DROWSINESS_EVENTS (Rectangle - Red)
+```
+┌─────────────────────────┐
+│   DROWSINESS_EVENTS     │
+├─────────────────────────┤
+│ 🔑 event_id (PK)        │
+│ 🔗 session_id (FK)      │
+│ ⏰ timestamp            │
+│ 🎯 detection_type       │
+│ 🚨 severity             │
+│ 🔔 alarm_triggered      │
+└─────────────────────────┘
+```
 
-- 🔐 **User Authentication & Profiles**
-- ⚙️ **Personalized Detection Settings**
-- 📊 **Session-based Monitoring**
-- 🚨 **Real-time Event Logging**
-- 📹 **Multi-camera Support**
-- 📈 **Historical Analytics**
-- 🎛️ **Configurable Thresholds**
+### 📦 USER_SETTINGS (Rectangle - Green)
+```
+┌─────────────────────────┐
+│     USER_SETTINGS       │
+├─────────────────────────┤
+│ 🔑 setting_id (PK)      │
+│ 🔗 username (FK)        │
+│ 👁️ ear_threshold        │
+│ 👄 mar_threshold        │
+│ 🔊 sound_enabled        │
+└─────────────────────────┘
+```
+
+### 📦 CAMERA_CALIBRATION (Rectangle - Orange)
+```
+┌─────────────────────────┐
+│   CAMERA_CALIBRATION    │
+├─────────────────────────┤
+│ 🔑 calibration_id (PK)  │
+│ 🔗 username (FK)        │
+│ 📹 camera_index         │
+│ 👁️ baseline_ear         │
+│ ✅ is_active            │
+└─────────────────────────┘
+```
+
+## Relationship Diamonds
+
+### 💎 has_sessions
+```
+USERS ────💎────► DETECTION_SESSIONS
+        has_sessions
+          (1:N)
+```
+
+### 💎 contains_events
+```
+DETECTION_SESSIONS ────💎────► DROWSINESS_EVENTS
+                 contains_events
+                     (1:N)
+```
+
+### 💎 configures
+```
+USERS ────💎────► USER_SETTINGS
+      configures
+        (1:N)
+```
+
+### 💎 calibrates
+```
+USERS ────💎────► CAMERA_CALIBRATION
+      calibrates
+        (1:N)
+```
+
+## System Data Flow
+
+1. **👤 User Registration** → Creates record in USERS rectangle
+2. **⚙️ Configuration Setup** → Populates USER_SETTINGS rectangle
+3. **📹 Camera Setup** → Fills CAMERA_CALIBRATION rectangle
+4. **🟢 Start Session** → New record in DETECTION_SESSIONS rectangle
+5. **🚨 Detection Events** → Multiple records in DROWSINESS_EVENTS rectangle
+6. **📊 Session End** → Updates DETECTION_SESSIONS with summary
 
 ---
 
-*This ER diagram represents the complete database schema for a comprehensive drowsiness detection system with user management, session tracking, and detailed event logging capabilities.*
+*This ER diagram uses traditional geometric shapes to represent different database elements, making it easy to understand the structure and relationships in the drowsiness detection system.*
